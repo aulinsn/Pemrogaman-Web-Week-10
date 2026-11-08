@@ -10,7 +10,7 @@ export async function getProducts(req: Request, res: Response) {
 
 export async function getProductById(req: Request, res: Response) {
   const product = await prisma.product.findUnique({
-    where: { id: Number(req.params.id) },
+    where: { id: res.locals.productId },
   });
   if (!product) {
     return res.status(404).json({ message: "Produk tidak ditemukan" });
@@ -28,7 +28,7 @@ export async function createProduct(req: Request, res: Response) {
 
 export async function updateProduct(req: Request, res: Response) {
   const { name, price } = req.body;
-  const id = Number(req.params.id ?? req.body.id);
+  const id: number = res.locals.productId;
 
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) {
@@ -43,7 +43,7 @@ export async function updateProduct(req: Request, res: Response) {
 }
 
 export async function deleteProduct(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id: number = res.locals.productId;
 
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) {
