@@ -25,3 +25,19 @@ export async function createProduct(req: Request, res: Response) {
   });
   res.status(201).json(product);
 }
+
+export async function updateProduct(req: Request, res: Response) {
+  const { name, price } = req.body;
+  const id = Number(req.params.id ?? req.body.id);
+
+  const existing = await prisma.product.findUnique({ where: { id } });
+  if (!existing) {
+    return res.status(404).json({ message: "Produk tidak ditemukan" });
+  }
+
+  const product = await prisma.product.update({
+    where: { id },
+    data: { name, price },
+  });
+  res.status(200).json(product);
+}
