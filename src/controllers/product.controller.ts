@@ -41,3 +41,15 @@ export async function updateProduct(req: Request, res: Response) {
   });
   res.status(200).json(product);
 }
+
+export async function deleteProduct(req: Request, res: Response) {
+  const id = Number(req.params.id);
+
+  const existing = await prisma.product.findUnique({ where: { id } });
+  if (!existing) {
+    return res.status(404).json({ message: "Produk tidak ditemukan" });
+  }
+
+  await prisma.product.delete({ where: { id } });
+  res.status(200).json({ message: "Produk berhasil dihapus", data: existing });
+}
