@@ -1,19 +1,22 @@
 import './App.css';
+import ProductCard from './components/ProductCard';
 import { initialProducts } from './data/products';
-import { formatRupiah } from './utils/formatRupiah';
 
 export default function App() {
   return (
     <main className="page">
       <h1>Manajemen Produk</h1>
       <p className="subtitle">Kelola daftar produk dan harga dalam satu tempat.</p>
-      <ul>
+      <section className="product-grid">
         {initialProducts.map((product) => (
-          <li key={product.id}>
-            {product.name} ({formatRupiah(product.price)})
-          </li>
+          <ProductCard
+            key={product.id}
+            product={product}
+            onEdit={() => undefined}
+            onDelete={() => undefined}
+          />
         ))}
-      </ul>
+      </section>
     </main>
   );
 }
