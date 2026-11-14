@@ -1,0 +1,24 @@
+:root {
+  --primary: #0b3ee3;
+  --primary-dark: #0831b8;
+  --danger: #dc2626;
+  --danger-dark: #b91c1c;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #cbd5e1;
+  --bg: #f6f8fc;
+  --card: #ffffff;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
