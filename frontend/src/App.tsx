@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import './App.css';
+import DeleteDialog from './components/DeleteDialog';
 import ProductCard from './components/ProductCard';
 import ProductFormModal from './components/ProductFormModal';
 import type { ProductFormData } from './components/ProductFormModal';
@@ -11,6 +12,7 @@ export default function App() {
   const [query, setQuery] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
   const nextId = useRef(Math.max(...initialProducts.map((product) => product.id)) + 1);
 
   const keyword = query.trim().toLowerCase();
@@ -34,6 +36,14 @@ export default function App() {
       ),
     );
     setEditingProduct(null);
+  }
+
+  function removeProduct() {
+    if (!deletingProduct) {
+      return;
+    }
+    setProducts((current) => current.filter((product) => product.id !== deletingProduct.id));
+    setDeletingProduct(null);
   }
 
   return (
@@ -69,7 +79,7 @@ export default function App() {
               key={product.id}
               product={product}
               onEdit={setEditingProduct}
-              onDelete={() => undefined}
+              onDelete={setDeletingProduct}
             />
           ))}
         </section>
@@ -87,6 +97,14 @@ export default function App() {
           product={editingProduct}
           onSubmit={updateProduct}
           onClose={() => setEditingProduct(null)}
+        />
+      )}
+
+      {deletingProduct && (
+        <DeleteDialog
+          product={deletingProduct}
+          onConfirm={removeProduct}
+          onClose={() => setDeletingProduct(null)}
         />
       )}
     </main>
