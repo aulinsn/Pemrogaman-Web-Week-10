@@ -1,17 +1,27 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './App.css';
 import ProductCard from './components/ProductCard';
+import ProductFormModal from './components/ProductFormModal';
+import type { ProductFormData } from './components/ProductFormModal';
 import { initialProducts } from './data/products';
 import type { Product } from './types/product';
 
 export default function App() {
-  const [products] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [query, setQuery] = useState('');
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const nextId = useRef(Math.max(...initialProducts.map((product) => product.id)) + 1);
 
   const keyword = query.trim().toLowerCase();
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(keyword),
   );
+
+  function addProduct(data: ProductFormData) {
+    const id = nextId.current++;
+    setProducts((current) => [...current, { id, ...data }]);
+    setIsAddOpen(false);
+  }
 
   return (
     <main className="page">
@@ -20,7 +30,7 @@ export default function App() {
           <h1>Manajemen Produk</h1>
           <p className="subtitle">Kelola daftar produk dan harga dalam satu tempat.</p>
         </div>
-        <button type="button" className="btn btn-primary">
+        <button type="button" className="btn btn-primary" onClick={() => setIsAddOpen(true)}>
           + Tambah Produk
         </button>
       </header>
@@ -55,6 +65,8 @@ export default function App() {
       <p className="page-footer">
         Menampilkan {filteredProducts.length} dari {products.length} produk
       </p>
+
+      {isAddOpen && <ProductFormModal onSubmit={addProduct} onClose={() => setIsAddOpen(false)} />}
     </main>
   );
 }
