@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import type { Product } from '../types/product';
 import Modal from './Modal';
 
 export interface ProductFormData {
@@ -13,6 +14,7 @@ interface FormErrors {
 }
 
 interface ProductFormModalProps {
+  product?: Product;
   onSubmit: (data: ProductFormData) => void;
   onClose: () => void;
 }
@@ -32,9 +34,10 @@ function validate(name: string, price: string): FormErrors {
   return errors;
 }
 
-export default function ProductFormModal({ onSubmit, onClose }: ProductFormModalProps) {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
+export default function ProductFormModal({ product, onSubmit, onClose }: ProductFormModalProps) {
+  const isEdit = product !== undefined;
+  const [name, setName] = useState(product?.name ?? '');
+  const [price, setPrice] = useState(product ? String(product.price) : '');
   const [errors, setErrors] = useState<FormErrors>({});
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -49,8 +52,11 @@ export default function ProductFormModal({ onSubmit, onClose }: ProductFormModal
 
   return (
     <Modal labelId="product-form-title" onClose={onClose}>
-      <h2 id="product-form-title">Tambah Produk</h2>
-      <p className="modal-description">Masukkan informasi produk baru.</p>
+      <h2 id="product-form-title">{isEdit ? 'Edit Produk' : 'Tambah Produk'}</h2>
+      <p className="modal-description">
+        {isEdit ? 'Perbarui informasi produk yang dipilih.' : 'Masukkan informasi produk baru.'}
+      </p>
+      {product && <p className="modal-product-id">ID: {product.id}</p>}
 
       <form onSubmit={handleSubmit} noValidate>
         <label className="form-label" htmlFor="product-name">
@@ -94,7 +100,7 @@ export default function ProductFormModal({ onSubmit, onClose }: ProductFormModal
             Batal
           </button>
           <button type="submit" className="btn btn-primary">
-            Simpan Produk
+            {isEdit ? 'Simpan Perubahan' : 'Simpan Produk'}
           </button>
         </div>
       </form>

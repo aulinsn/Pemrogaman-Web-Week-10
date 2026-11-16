@@ -10,6 +10,7 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [query, setQuery] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const nextId = useRef(Math.max(...initialProducts.map((product) => product.id)) + 1);
 
   const keyword = query.trim().toLowerCase();
@@ -21,6 +22,18 @@ export default function App() {
     const id = nextId.current++;
     setProducts((current) => [...current, { id, ...data }]);
     setIsAddOpen(false);
+  }
+
+  function updateProduct(data: ProductFormData) {
+    if (!editingProduct) {
+      return;
+    }
+    setProducts((current) =>
+      current.map((product) =>
+        product.id === editingProduct.id ? { ...product, ...data } : product,
+      ),
+    );
+    setEditingProduct(null);
   }
 
   return (
@@ -55,7 +68,7 @@ export default function App() {
             <ProductCard
               key={product.id}
               product={product}
-              onEdit={() => undefined}
+              onEdit={setEditingProduct}
               onDelete={() => undefined}
             />
           ))}
@@ -67,6 +80,15 @@ export default function App() {
       </p>
 
       {isAddOpen && <ProductFormModal onSubmit={addProduct} onClose={() => setIsAddOpen(false)} />}
+
+      {editingProduct && (
+        <ProductFormModal
+          key={editingProduct.id}
+          product={editingProduct}
+          onSubmit={updateProduct}
+          onClose={() => setEditingProduct(null)}
+        />
+      )}
     </main>
   );
 }
