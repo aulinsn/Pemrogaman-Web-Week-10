@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { requestLogger } from "../../src/middleware/request-logger.js";
-import { errorHandler } from "../../src/middleware/error-handler.js";
-import productRouter from "../../src/routes/product.routes.js";
+import { requestLogger } from "./middleware/request-logger.js";
+import { errorHandler } from "./middleware/error-handler.js";
+import productRouter from "./routes/product.routes.js";
 
 const app = express();
 
